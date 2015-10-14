@@ -1,2 +1,2 @@
 # aligned-melody-correcter
-Correct the predominant melody of a audio (predominant) melody already aligned by the relevant score
+Methods to filter/correct the predominant melody of a audio (predominant) melody already aligned by the relevant score
