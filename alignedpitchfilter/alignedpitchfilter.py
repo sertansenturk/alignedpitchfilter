@@ -1,11 +1,11 @@
 import numpy as np
 
-def correctOctaveErrors(pitch, notes, tonic, ):
+def correctOctaveErrors(pitch, notes, tonicFreq):
 	# convert the symbolic pitch heights recorded in notes to Hz wrt tonic
 	for note in notes:
 		note['SymbolicPitch'] = note['Pitch']
 		note['Pitch'] = {'Value': cent2hz(note['Pitch']['Value'],
-			tonic['Value']),'Unit':'Hz'}
+			tonicFreq),'Unit':'Hz'}
 
 	# remove skipped notes
 	notes = ([n for n in notes 
