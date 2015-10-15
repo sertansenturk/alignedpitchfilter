@@ -1,4 +1,5 @@
 import numpy as np
+import pdb
 
 def correctOctaveErrors(pitch, notes, tonic, ):
 	# convert the symbolic pitch heights recorded in notes to Hz wrt tonic
@@ -34,10 +35,23 @@ def notes2synthPitch(notes, time_stamps, max_boundary_tol = 6):
 		nextlabel = ([] if i == len(notes)-1 else
 			notes[i+1]['Label'].split('--')[0])
 
-		# pre interpolation start time on the first note and the groups start
-		if (not prevlabel) or (not label == prevlabel):
+		# pre interpolation start time on the first note
+		if not prevlabel:
 			startidx = find_closest_sample_idx(
 				notes[i]['Interval'][0]-max_boundary_tol, time_stamps)
+		elif not label == prevlabel:
+			# post interpolation start time on a group start
+
+			# recalculate the end time of the previous
+			tempstartidx = find_closest_sample_idx(
+				notes[i]['Interval'][0], time_stamps)
+			prevendidx = find_closest_sample_idx(
+				notes[i-1]['Interval'][1]+max_boundary_tol, 
+				time_stamps[:tempstartidx])
+
+			startidx = prevendidx+find_closest_sample_idx(
+				notes[i]['Interval'][0]-max_boundary_tol, 
+				time_stamps[prevendidx:])+1
 		else:  # no pre interpolation
 			startidx = find_closest_sample_idx(
 				notes[i]['Interval'][0], time_stamps)
@@ -47,7 +61,7 @@ def notes2synthPitch(notes, time_stamps, max_boundary_tol = 6):
 			endidx = find_closest_sample_idx(
 				notes[i]['Interval'][1]+max_boundary_tol, time_stamps)
 		elif not label == nextlabel:
-			# post interpolation end time on group end
+			# post interpolation end time on a group end
 			nextstartidx = find_closest_sample_idx(
 				notes[i+1]['Interval'][0], time_stamps)
 			endidx = find_closest_sample_idx(
