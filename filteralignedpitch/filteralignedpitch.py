@@ -1,4 +1,3 @@
-import pdb
 import numpy as np
 
 def correctOctaveErrors(pitch, notes, tonic, ):
@@ -11,6 +10,9 @@ def correctOctaveErrors(pitch, notes, tonic, ):
 	# remove skipped notes
 	notes = ([n for n in notes 
 		if not n['Interval'][0] == n['Interval'][1]])
+
+	# remove rests
+	notes = [n for n in notes if n['Pitch']['Value']]
 
 	# group the notes into sections
 	synth_pitch = notes2synthPitch(notes, pitch[:,0])
@@ -58,7 +60,7 @@ def notes2synthPitch(notes, time_stamps, max_boundary_tol = 6):
 			endidx = nextstartidx-1
 		
 		synthPitch[startidx:endidx+1] = notes[i]['Pitch']['Value']
-
+	
 	return synthPitch
 
 def find_closest_sample_idx(val, sampleVals):
@@ -83,7 +85,10 @@ def move2sameOctave(pp, sp):
 	return minpp
 
 def cent2hz(centVal, refHz):
-	return refHz * 2**(centVal/1200)
+	try:
+		return refHz * 2**(centVal/1200)
+	except TypeError:  # _NaN_; rest
+		return None
 
 def hz2cent(val, refHz):
 	return 1200 * np.log2(val/refHz)
