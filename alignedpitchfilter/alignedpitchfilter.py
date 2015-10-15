@@ -1,5 +1,4 @@
 import numpy as np
-import pdb
 
 def correctOctaveErrors(pitch, notes, tonic, ):
 	# convert the symbolic pitch heights recorded in notes to Hz wrt tonic
