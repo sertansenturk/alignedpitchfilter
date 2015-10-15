@@ -1,9 +1,6 @@
 import pdb
 import numpy as np
 
-def cent2hz(centVal, refHz):
-	return refHz * 2**(centVal/1200)
-
 def correctOctaveErrors(pitch, notes, tonic, ):
 	# convert the symbolic pitch heights recorded in notes to Hz wrt tonic
 	for note in notes:
@@ -11,13 +8,19 @@ def correctOctaveErrors(pitch, notes, tonic, ):
 		note['Pitch'] = {'Value': cent2hz(note['Pitch']['Value'],
 			tonic['Value']),'Unit':'Hz'}
 
+	# remove skipped notes
+	notes = ([n for n in notes 
+		if not n['Interval'][0] == n['Interval'][1]])
+
 	# group the notes into sections
-	synthPitch = notes2synthPitch(notes, pitch[:,0])
+	synth_pitch = notes2synthPitch(notes, pitch[:,0])
 
-	# divide pitch into chunks
-	pitchChunks = decompose_into_chunks(pitch)
+	# octave correction
+	pitch_corrected = np.copy(pitch)
+	for i, sp in enumerate(synth_pitch):
+		pitch_corrected[i][1] = move2sameOctave(pitch[i][1], sp)
 
-	return synthPitch, pitchChunks, notes
+	return pitch_corrected, synth_pitch, notes
 
 def notes2synthPitch(notes, time_stamps, max_boundary_tol = 6):
 	synthPitch = np.array([0] * len(time_stamps))
@@ -37,12 +40,10 @@ def notes2synthPitch(notes, time_stamps, max_boundary_tol = 6):
 			startidx = find_closest_sample_idx(
 				notes[i]['Interval'][0], time_stamps)
 
-		
 		if not nextlabel:
 			# post interpolation end time on the last note
 			endidx = find_closest_sample_idx(
 				notes[i]['Interval'][1]+max_boundary_tol, time_stamps)
-			
 		elif not label == nextlabel:
 			# post interpolation end time on group end
 			nextstartidx = find_closest_sample_idx(
@@ -50,9 +51,8 @@ def notes2synthPitch(notes, time_stamps, max_boundary_tol = 6):
 			endidx = find_closest_sample_idx(
 				notes[i]['Interval'][1]+max_boundary_tol, 
 				time_stamps[:nextstartidx])
-			
 		else:
-			# post interpolation end time on the last note and group ends
+			# post interpolation within a group
 			nextstartidx = find_closest_sample_idx(
 				notes[i+1]['Interval'][0], time_stamps)
 			endidx = nextstartidx-1
@@ -63,6 +63,30 @@ def notes2synthPitch(notes, time_stamps, max_boundary_tol = 6):
 
 def find_closest_sample_idx(val, sampleVals):
 	return np.argmin(abs(sampleVals - val))
+
+def move2sameOctave(pp, sp):
+	minpp = pp
+	if not(pp == 0 or sp == 0):
+		direction = 1 if sp > pp else -1
+
+		prev_cent_diff = 1000000 # assign an absurd number
+		decr = True
+		while decr:
+			cent_diff = abs(hz2cent(pp,sp))
+			if prev_cent_diff > cent_diff:
+				minpp = pp
+				pp = pp * (2 ** direction)
+				prev_cent_diff = cent_diff
+			else:
+				decr = False
+
+	return minpp
+
+def cent2hz(centVal, refHz):
+	return refHz * 2**(centVal/1200)
+
+def hz2cent(val, refHz):
+	return 1200 * np.log2(val/refHz)
 
 def decompose_into_chunks(pitch, bottom_limit=0.7, upper_limit=1.3):
     """
