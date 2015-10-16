@@ -37,7 +37,7 @@ The outputs are:
 Installation
 ============
 
-If you want to install symbtrmetadataextractor, it is recommended to install symbtrmetadataextractor and dependencies into a virtualenv. In the terminal, do the following:
+If you want to install alignednotemodels, it is recommended to install the package and dependencies into a virtualenv. In the terminal, do the following:
 
     virtualenv env
     source env/bin/activate
