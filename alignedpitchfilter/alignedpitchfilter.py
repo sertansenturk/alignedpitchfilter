@@ -28,7 +28,7 @@ def correctOctaveErrors(pitch, notes):
 	for i, sp in enumerate(synth_pitch):
 		pitch_corrected[i][1] = move2sameOctave(pitch[i][1], sp)
 
-	return pitch_corrected, synth_pitch, notes_corrected
+	return pitch_corrected, synth_pitch
 
 def notes2synthPitch(notes, time_stamps, max_boundary_tol = 6):
 	synthPitch = np.array([0] * len(time_stamps))
