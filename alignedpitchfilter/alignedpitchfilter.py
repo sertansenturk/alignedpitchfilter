@@ -18,7 +18,7 @@ def correctOctaveErrors(pitch, notes):
 		if not n['Interval'][0] == n['Interval'][1]])
 
 	# remove rests
-	notes_corrected = [n for n in notes_corrected if n['Pitch']['Value']]
+	notes_corrected = [n for n in notes_corrected if n['TheoreticalPitch']['Value']]
 	
 	# group the notes into sections
 	synth_pitch = notes2synthPitch(notes_corrected, pitch[:,0])
@@ -28,7 +28,13 @@ def correctOctaveErrors(pitch, notes):
 	for i, sp in enumerate(synth_pitch):
 		pitch_corrected[i][1] = move2sameOctave(pitch[i][1], sp)
 
-	return pitch_corrected, synth_pitch
+	for nc in notes_corrected:
+		trajectory = np.vstack(p[1] for p in pitch_corrected
+				if nc['Interval'][0] <= p[0] <= nc['Interval'][1])
+		nc['PerformedPitch']['Value'] = np.median(trajectory).tolist()
+		#import pdb
+		#pdb.set_trace()
+	return pitch_corrected, synth_pitch, notes_corrected
 
 def notes2synthPitch(notes, time_stamps, max_boundary_tol = 6):
 	synthPitch = np.array([0] * len(time_stamps))
@@ -78,7 +84,7 @@ def notes2synthPitch(notes, time_stamps, max_boundary_tol = 6):
 				notes[i+1]['Interval'][0], time_stamps)
 			endidx = nextstartidx-1
 
-		synthPitch[startidx:endidx+1] = notes[i]['Pitch']['Value']
+		synthPitch[startidx:endidx+1] = notes[i]['TheoreticalPitch']['Value']
 
 	return synthPitch
 
