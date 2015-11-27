@@ -1,14 +1,15 @@
 import numpy as np
 import copy
 
-def correctOctaveErrors(pitch, notes, tonicFreq):
+def correctOctaveErrors(pitch, notes):
 	# IMPORTANT: In the audio-score alignment step, the pitch value
 	# of each note is computed from the theoretical pitch distance
 	# from the tonic and de-normalized according to the tonic
 	# frequency of the performance. The value is not computed from
 	# THE PITCH TRAJECTORY OF THE NOTE; it is just the THEORETICAL
 	# FREQUENCY OF THE NOTE SYMBOL ACCORDING TO THE TONIC FREQUENY
-	# The real value of the note will be computed.
+	# The performed stable pitch of the note will be computed in the 
+	# aligned-note-models
 
 	notes_corrected = copy.deepcopy(notes)
 
@@ -18,9 +19,9 @@ def correctOctaveErrors(pitch, notes, tonicFreq):
 
 	# remove rests
 	notes_corrected = [n for n in notes_corrected if n['Pitch']['Value']]
-
+	
 	# group the notes into sections
-	synth_pitch = notes2synthPitch(notes_corrected, pitch[:,0], tonicFreq)
+	synth_pitch = notes2synthPitch(notes_corrected, pitch[:,0])
 
 	# octave correction
 	pitch_corrected = np.copy(pitch)
@@ -29,7 +30,7 @@ def correctOctaveErrors(pitch, notes, tonicFreq):
 
 	return pitch_corrected, synth_pitch, notes_corrected
 
-def notes2synthPitch(notes, time_stamps, tonicFreq, max_boundary_tol = 6):
+def notes2synthPitch(notes, time_stamps, max_boundary_tol = 6):
 	synthPitch = np.array([0] * len(time_stamps))
 
 	for i in range(0,len(notes)):
