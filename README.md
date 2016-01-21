@@ -32,6 +32,8 @@ The outputs are:
 # synth_pitch	  :	Synthetic pitch track from the notes input that is used for octave correction
 ```
 
+You can refer to [pitchExtract.ipynb](pitchExtract.ipynb) for an interactive demo.
+
 Installation
 ============
 
