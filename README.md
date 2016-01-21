@@ -22,7 +22,7 @@ The inputs are:
 #					the timestamps and the values in the second column are frequency 
 #					values
 # notes			  :	list of note structure. This is read from the alignedNotes.json 
-#					output from [fragmentLinker](https://github.com/sertansenturk/fragmentLinker) repository 
+#					output from https://github.com/sertansenturk/fragmentLinker repository 
 # tonic			  : The tonic frequency value
 ```
 
