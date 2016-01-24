@@ -1,28 +1,40 @@
 import numpy as np
+import copy
 
-def correctOctaveErrors(pitch, notes, tonicFreq):
-	# convert the symbolic pitch heights recorded in notes to Hz wrt tonic
-	for note in notes:
-		note['SymbolicPitch'] = note['Pitch']
-		note['Pitch'] = {'Value': cent2hz(note['Pitch']['Value'],
-			tonicFreq),'Unit':'Hz'}
+def correctOctaveErrors(pitch, notes):
+	# IMPORTANT: In the audio-score alignment step, the pitch value
+	# of each note is computed from the theoretical pitch distance
+	# from the tonic and de-normalized according to the tonic
+	# frequency of the performance. The value is not computed from
+	# THE PITCH TRAJECTORY OF THE NOTE; it is just the THEORETICAL
+	# FREQUENCY OF THE NOTE SYMBOL ACCORDING TO THE TONIC FREQUENY
+	# The performed stable pitch of the note will be computed in the 
+	# aligned-note-models
+
+	notes_corrected = copy.deepcopy(notes)
 
 	# remove skipped notes
-	notes = ([n for n in notes 
+	notes_corrected = ([n for n in notes_corrected
 		if not n['Interval'][0] == n['Interval'][1]])
 
 	# remove rests
-	notes = [n for n in notes if n['Pitch']['Value']]
-
+	notes_corrected = [n for n in notes_corrected if n['TheoreticalPitch']['Value']]
+	
 	# group the notes into sections
-	synth_pitch = notes2synthPitch(notes, pitch[:,0])
+	synth_pitch = notes2synthPitch(notes_corrected, pitch[:,0])
 
 	# octave correction
 	pitch_corrected = np.copy(pitch)
 	for i, sp in enumerate(synth_pitch):
 		pitch_corrected[i][1] = move2sameOctave(pitch[i][1], sp)
 
-	return pitch_corrected, synth_pitch, notes
+	for nc in notes_corrected:
+		trajectory = np.vstack(p[1] for p in pitch_corrected
+				if nc['Interval'][0] <= p[0] <= nc['Interval'][1])
+		nc['PerformedPitch']['Value'] = np.median(trajectory).tolist()
+		#import pdb
+		#pdb.set_trace()
+	return pitch_corrected, synth_pitch, notes_corrected
 
 def notes2synthPitch(notes, time_stamps, max_boundary_tol = 6):
 	synthPitch = np.array([0] * len(time_stamps))
@@ -71,9 +83,9 @@ def notes2synthPitch(notes, time_stamps, max_boundary_tol = 6):
 			nextstartidx = find_closest_sample_idx(
 				notes[i+1]['Interval'][0], time_stamps)
 			endidx = nextstartidx-1
-		
-		synthPitch[startidx:endidx+1] = notes[i]['Pitch']['Value']
-	
+
+		synthPitch[startidx:endidx+1] = notes[i]['TheoreticalPitch']['Value']
+
 	return synthPitch
 
 def find_closest_sample_idx(val, sampleVals):
@@ -99,12 +111,12 @@ def move2sameOctave(pp, sp):
 
 def cent2hz(centVal, refHz):
 	try:
-		return refHz * 2**(centVal/1200)
+		return refHz * 2**(centVal/1200.0)
 	except TypeError:  # _NaN_; rest
 		return None
 
 def hz2cent(val, refHz):
-	return 1200 * np.log2(val/refHz)
+	return 1200.0 * np.log2(val/refHz)
 
 def decompose_into_chunks(pitch, bottom_limit=0.7, upper_limit=1.3):
     """
