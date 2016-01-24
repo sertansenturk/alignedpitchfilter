@@ -1,7 +1,5 @@
 # aligned-pitch-filter
 
-Introduction
-------------
 Python package to filter/correct a pitch track according to the alignment with the relevant score.
 
 Currently the algorithm is able to correct the octave errors by taking pitch heights of the aligned notes as the reference.
