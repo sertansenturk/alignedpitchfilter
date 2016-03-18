@@ -9,9 +9,9 @@ Usage
 All the relevant data can be easily obtained:
 
 ```python
-from alignedpitchfilter import alignedpitchfilter
+from alignedpitchfilter.AlignedPitchFilter import AlignedPitchFilter
 
-pitch_corrected, synth_pitch, notes = alignedpitchfilter.correctOctaveErrors(pitch, notes, tonic)
+pitch_corrected, synth_pitch, notes = AlignedPitchFilter.correctOctaveErrors(pitch, notes, tonic)
 ```
 
 The inputs are:
