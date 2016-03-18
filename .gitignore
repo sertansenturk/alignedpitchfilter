@@ -1,3 +1,6 @@
 .*
 *.pyc
 alignedpitchfilter.egg-info
+!.gitignore
+!.travis.yml
+
