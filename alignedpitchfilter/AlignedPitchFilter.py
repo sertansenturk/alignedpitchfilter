@@ -26,8 +26,8 @@ class AlignedPitchFilter(object):
                            n['TheoreticalPitch']['Value']]
 
         # group the notes into sections
-        synth_pitch = cls._notes_to_synth_pitch(notes_corrected,
-                                               pitch_corrected[:, 0])
+        synth_pitch = cls._notes_to_synth_pitch(
+            notes_corrected, pitch_corrected[:, 0])
 
         # octave correction
         for i, sp in enumerate(synth_pitch):
