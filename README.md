@@ -12,7 +12,7 @@ All the relevant data can be easily obtained:
 from alignedpitchfilter.AlignedPitchFilter import AlignedPitchFilter
 
 alignedPitchFilter = AlignedPitchFilter()
-pitch_corrected, synth_pitch, notes = alignedPitchFilter.filter(pitch, notes)
+pitch_corrected, notes, synth_pitch = alignedPitchFilter.filter(pitch, notes)
 ```
 
 The inputs are:

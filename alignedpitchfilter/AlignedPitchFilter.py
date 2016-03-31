@@ -33,7 +33,7 @@ class AlignedPitchFilter(object):
             notes_corrected, pitch_corrected[:, 0])
 
         # octave correction
-        for i, sp in enumerate(synth_pitch):
+        for i, sp in enumerate(synth_pitch[:,1]):
             pitch_corrected[i][1] = self._move_to_same_octave(
                 pitch_corrected[i][1], sp)
 
@@ -43,7 +43,7 @@ class AlignedPitchFilter(object):
                 if nc['Interval'][0] <= p[0] <= nc['Interval'][1])
             nc['PerformedPitch']['Value'] = np.median(trajectory).tolist()
 
-        return pitch_corrected, synth_pitch, notes_corrected
+        return pitch_corrected, notes_corrected, synth_pitch.tolist()
 
     def _notes_to_synth_pitch(self, notes, time_stamps):
         synth_pitch = np.array([0] * len(time_stamps))
@@ -97,6 +97,9 @@ class AlignedPitchFilter(object):
 
             synth_pitch[startidx:endidx + 1] = \
                 notes[i]['TheoreticalPitch']['Value']
+
+        # add time_stamps
+        synth_pitch = np.transpose(np.vstack((time_stamps, synth_pitch)))
 
         return synth_pitch
 
