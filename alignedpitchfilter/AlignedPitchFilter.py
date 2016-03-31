@@ -112,7 +112,7 @@ class AlignedPitchFilter(object):
         minpp = pp
         if not (pp in [0, np.nan] or sp in [0, np.nan]):
             cent_diff = cls._hz2cent(pp, sp)
-            octave_cands = [cent_diff, cent_diff-1200]
+            octave_cands = [cent_diff, cent_diff - 1200]
             cand_dist = [abs(oc) for oc in octave_cands]
             closest_cent_diff = octave_cands[cand_dist.index(min(cand_dist))]
 
