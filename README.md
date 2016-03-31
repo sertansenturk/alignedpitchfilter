@@ -31,7 +31,7 @@ The outputs are:
 # notes_corrected : Aligned notes which are removed according to the pitch filtering (e.g. notes with zero duration)
 ```
 
-You can refer to [pitchExtract.ipynb](pitchExtract.ipynb) for an interactive demo.
+You can refer to [filter_pitch.ipynb](https://github.com/sertansenturk/alignedpitchfilter/blob/master/filter_pitch.ipynb) for an interactive demo. Moreover, [extract_pitch.ipynb](https://github.com/sertansenturk/alignedpitchfilter/blob/master/extract_pitch.ipynb) shows how to extract the predominant melody using (tomato)[https://github.com/sertansenturk/tomato/tree/master/tomato].
 
 Installation
 ============
