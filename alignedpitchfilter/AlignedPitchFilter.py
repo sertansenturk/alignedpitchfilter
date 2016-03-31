@@ -33,7 +33,7 @@ class AlignedPitchFilter(object):
             notes_corrected, pitch_corrected[:, 0])
 
         # octave correction
-        for i, sp in enumerate(synth_pitch[:,1]):
+        for i, sp in enumerate(synth_pitch[:, 1]):
             pitch_corrected[i][1] = self._move_to_same_octave(
                 pitch_corrected[i][1], sp)
 
