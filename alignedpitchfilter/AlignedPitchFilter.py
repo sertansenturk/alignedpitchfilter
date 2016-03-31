@@ -3,8 +3,10 @@ import copy
 
 
 class AlignedPitchFilter(object):
-    @classmethod
-    def filter(cls, pitch, notes):
+    def __init__(self):
+        self.max_boundary_tol = 3  # seconds
+
+    def filter(self, pitch, notes):
         # IMPORTANT: In the audio-score alignment step, the pitch value
         # of each note is computed from the theoretical pitch distance
         # from the tonic and de-normalized according to the tonic
@@ -26,12 +28,12 @@ class AlignedPitchFilter(object):
                            n['TheoreticalPitch']['Value']]
 
         # group the notes into sections
-        synth_pitch = cls._notes_to_synth_pitch(
+        synth_pitch = self._notes_to_synth_pitch(
             notes_corrected, pitch_corrected[:, 0])
 
         # octave correction
         for i, sp in enumerate(synth_pitch):
-            pitch_corrected[i][1] = cls._move_to_same_octave(
+            pitch_corrected[i][1] = self._move_to_same_octave(
                 pitch_corrected[i][1], sp)
 
         for nc in notes_corrected:
@@ -42,8 +44,7 @@ class AlignedPitchFilter(object):
 
         return pitch_corrected, synth_pitch, notes_corrected
 
-    @classmethod
-    def _notes_to_synth_pitch(cls, notes, time_stamps, max_boundary_tol=6):
+    def _notes_to_synth_pitch(self, notes, time_stamps):
         synth_pitch = np.array([0] * len(time_stamps))
 
         for i in range(0, len(notes)):
@@ -55,39 +56,41 @@ class AlignedPitchFilter(object):
 
             # pre interpolation start time on the first note
             if not prevlabel:
-                startidx = cls._find_closest_sample_idx(
-                    notes[i]['Interval'][0] - max_boundary_tol, time_stamps)
+                startidx = self._find_closest_sample_idx(
+                    notes[i]['Interval'][0] - self.max_boundary_tol,
+                    time_stamps)
             elif not label == prevlabel:
                 # post interpolation start time on a group start
 
                 # recalculate the end time of the previous
-                tempstartidx = cls._find_closest_sample_idx(
+                tempstartidx = self._find_closest_sample_idx(
                     notes[i]['Interval'][0], time_stamps)
-                prevendidx = cls._find_closest_sample_idx(
-                    notes[i - 1]['Interval'][1] + max_boundary_tol,
+                prevendidx = self._find_closest_sample_idx(
+                    notes[i - 1]['Interval'][1] + self.max_boundary_tol,
                     time_stamps[:tempstartidx])
 
-                startidx = prevendidx + cls._find_closest_sample_idx(
-                    notes[i]['Interval'][0] - max_boundary_tol,
+                startidx = prevendidx + self._find_closest_sample_idx(
+                    notes[i]['Interval'][0] - self.max_boundary_tol,
                     time_stamps[prevendidx:]) + 1
             else:  # no pre interpolation
-                startidx = cls._find_closest_sample_idx(
+                startidx = self._find_closest_sample_idx(
                     notes[i]['Interval'][0], time_stamps)
 
             if not nextlabel:
                 # post interpolation end time on the last note
-                endidx = cls._find_closest_sample_idx(
-                    notes[i]['Interval'][1] + max_boundary_tol, time_stamps)
+                endidx = self._find_closest_sample_idx(
+                    notes[i]['Interval'][1] + self.max_boundary_tol,
+                    time_stamps)
             elif not label == nextlabel:
                 # post interpolation end time on a group end
-                nextstartidx = cls._find_closest_sample_idx(
+                nextstartidx = self._find_closest_sample_idx(
                     notes[i + 1]['Interval'][0], time_stamps)
-                endidx = cls._find_closest_sample_idx(
-                    notes[i]['Interval'][1] + max_boundary_tol,
+                endidx = self._find_closest_sample_idx(
+                    notes[i]['Interval'][1] + self.max_boundary_tol,
                     time_stamps[:nextstartidx])
             else:
                 # post interpolation within a group
-                nextstartidx = cls._find_closest_sample_idx(
+                nextstartidx = self._find_closest_sample_idx(
                     notes[i + 1]['Interval'][0], time_stamps)
                 endidx = nextstartidx - 1
 

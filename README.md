@@ -1,6 +1,6 @@
 # aligned-pitch-filter
 
-Python package to filter/correct a pitch track according to the alignment with the relevant score.
+Python tools to filter/correct a pitch track according to the alignment with the relevant score.
 
 Currently the algorithm is able to correct the octave errors by taking pitch heights of the aligned notes as the reference.
 
@@ -11,7 +11,8 @@ All the relevant data can be easily obtained:
 ```python
 from alignedpitchfilter.AlignedPitchFilter import AlignedPitchFilter
 
-pitch_corrected, synth_pitch, notes = AlignedPitchFilter.filter(pitch, notes)
+alignedPitchFilter = AlignedPitchFilter()
+pitch_corrected, synth_pitch, notes = alignedPitchFilter.filter(pitch, notes)
 ```
 
 The inputs are:
@@ -21,13 +22,13 @@ The inputs are:
 #					values
 # notes			  :	list of note structure. This is read from the alignedNotes.json 
 #					output from https://github.com/sertansenturk/fragmentLinker repository 
-# tonic			  : The tonic frequency value
 ```
 
 The outputs are:
 ```python
 # pitch_corrected :	The octave corrected pitch track. The size is equal to the size of pitch
 # synth_pitch	  :	Synthetic pitch track from the notes input that is used for octave correction
+# notes_corrected : Aligned notes which are removed according to the pitch filtering (e.g. notes with zero duration)
 ```
 
 You can refer to [pitchExtract.ipynb](pitchExtract.ipynb) for an interactive demo.
