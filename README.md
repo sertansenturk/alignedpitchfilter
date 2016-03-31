@@ -11,7 +11,7 @@ All the relevant data can be easily obtained:
 ```python
 from alignedpitchfilter.AlignedPitchFilter import AlignedPitchFilter
 
-pitch_corrected, synth_pitch, notes = AlignedPitchFilter.correctOctaveErrors(pitch, notes, tonic)
+pitch_corrected, synth_pitch, notes = AlignedPitchFilter.filter(pitch, notes)
 ```
 
 The inputs are:

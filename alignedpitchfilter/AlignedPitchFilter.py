@@ -4,7 +4,7 @@ import copy
 
 class AlignedPitchFilter(object):
     @classmethod
-    def corect_octave_errors(cls, pitch, notes):
+    def filter(cls, pitch, notes):
         # IMPORTANT: In the audio-score alignment step, the pitch value
         # of each note is computed from the theoretical pitch distance
         # from the tonic and de-normalized according to the tonic
