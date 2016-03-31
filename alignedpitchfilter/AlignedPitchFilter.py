@@ -1,5 +1,6 @@
 import numpy as np
 import copy
+import matplotlib.pyplot as plt
 
 
 class AlignedPitchFilter(object):
@@ -156,3 +157,58 @@ class AlignedPitchFilter(object):
             pitch_chunks.append(temp_pitch)
 
         return pitch_chunks
+
+    @staticmethod
+    def plot(pitch, pitch_corrected, notes_corrected):
+        # remove zeros for plotting
+        pitch_plot = np.copy(pitch)
+        pitch_plot[pitch_plot[:, 1] == 0, 1] = np.NAN
+
+        pitch_corrected_plot = np.copy(pitch_corrected)
+        pitch_corrected_plot[pitch_corrected_plot[:, 1] == 0, 1] = np.NAN
+
+        fig, ax = plt.subplots()
+
+        # plot pitch tracks
+        ax.plot(pitch_plot[:, 0], pitch_plot[:, 1], 'g', label='Pitch',
+                alpha=0.7)
+        ax.plot(pitch_corrected_plot[:, 0], pitch_corrected_plot[:, 1], 'b',
+                label=u'Corrected Pitch')
+
+        plt.xlabel('Time (sec)')
+        plt.ylabel('Frequency (Hz)')
+
+        plt.grid(True)
+
+        # plot notes except the last one
+        for note in notes_corrected[:-1]:
+            ax.plot(note['Interval'], [note['PerformedPitch']['Value'],
+                                       note['PerformedPitch']['Value']],
+                    'r', alpha=0.4, linewidth=4)
+
+        # plot last note for labeling
+        dmy_note = notes_corrected[-1]
+        ax.plot(dmy_note['Interval'], [dmy_note['PerformedPitch']['Value'],
+                                       dmy_note['PerformedPitch']['Value']],
+                'r', label=u'Aligned Notes', alpha=0.4, linewidth=4)
+
+        # set y axis limits
+        pitch_vals = np.hstack((pitch_plot[:, 1], pitch_corrected_plot[:, 1]))
+        pitch_vals = pitch_vals[~np.isnan(pitch_vals)]
+
+        min_y = np.min(pitch_vals)
+        max_y = np.max(pitch_vals)
+        range_y = max_y - min_y
+
+        ax.set_ylim([min_y - range_y * 0.1, max_y + range_y * 0.1])
+
+        # set x axis limits
+        time_vals = np.hstack((pitch_plot[:, 0], pitch_corrected_plot[:, 0]))
+
+        min_x = np.min(time_vals)
+        max_x = np.max(time_vals)
+
+        ax.set_xlim([min_x, max_x])
+
+        # place legend
+        ax.legend(loc='upper right')
