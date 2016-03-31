@@ -34,7 +34,7 @@ class AlignedPitchFilter(object):
 
         # octave correction
         for i, sp in enumerate(synth_pitch[:, 1]):
-            pitch_corrected[i][1] = self._move_to_same_octave(
+            pitch_corrected[i][1] = self._move_to_closest_octave(
                 pitch_corrected[i][1], sp)
 
         for nc in notes_corrected:
@@ -108,21 +108,15 @@ class AlignedPitchFilter(object):
         return np.argmin(abs(sample_vals - val))
 
     @classmethod
-    def _move_to_same_octave(cls, pp, sp):
+    def _move_to_closest_octave(cls, pp, sp):
         minpp = pp
-        if not (pp == 0 or sp == 0):
-            direction = 1 if sp > pp else -1
+        if not (pp in [0, np.nan] or sp in [0, np.nan]):
+            cent_diff = cls._hz2cent(pp, sp)
+            octave_cands = [cent_diff, cent_diff-1200]
+            cand_dist = [abs(oc) for oc in octave_cands]
+            closest_cent_diff = octave_cands[cand_dist.index(min(cand_dist))]
 
-            prev_cent_diff = 1000000  # assign an absurd number
-            decr = True
-            while decr:
-                cent_diff = abs(cls._hz2cent(pp, sp))
-                if prev_cent_diff > cent_diff:
-                    minpp = pp
-                    pp *= 2 ** direction
-                    prev_cent_diff = cent_diff
-                else:
-                    decr = False
+            minpp = cls._cent2hz(closest_cent_diff, sp)
 
         return minpp
 
