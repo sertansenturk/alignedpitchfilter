@@ -12,7 +12,7 @@ All the relevant data can be easily obtained:
 from alignedpitchfilter.AlignedPitchFilter import AlignedPitchFilter
 
 alignedPitchFilter = AlignedPitchFilter()
-pitch_corrected, notes, synth_pitch = alignedPitchFilter.filter(pitch, notes)
+pitch_corrected, notes_corrected, synth_pitch = alignedPitchFilter.filter(pitch, notes)
 ```
 
 The inputs are:
@@ -27,8 +27,8 @@ The inputs are:
 The outputs are:
 ```python
 # pitch_corrected :	The octave corrected pitch track. The size is equal to the size of pitch
-# synth_pitch	  :	Synthetic pitch track from the notes input that is used for octave correction
 # notes_corrected : Aligned notes which are removed according to the pitch filtering (e.g. notes with zero duration)
+# synth_pitch	  :	Synthetic pitch track from the notes input that is used for octave correction
 ```
 
 You can refer to [filter_pitch.ipynb](https://github.com/sertansenturk/alignedpitchfilter/blob/master/filter_pitch.ipynb) for an interactive demo. Moreover, [extract_pitch.ipynb](https://github.com/sertansenturk/alignedpitchfilter/blob/master/extract_pitch.ipynb) shows how to extract the predominant melody using [tomato](https://github.com/sertansenturk/tomato/tree/master/tomato).
