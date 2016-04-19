@@ -12,7 +12,7 @@
             ], 
             "Label": "1-HANE_1--n1", 
             "PerformedPitch": {
-                "Value": 166.72882080078125, 
+                "Value": 166.72882080078122, 
                 "Unit": "Hz"
             }, 
             "IndexInScore": 1, 
@@ -31,7 +31,7 @@
             ], 
             "Label": "1-HANE_1--n2", 
             "PerformedPitch": {
-                "Value": 148.32415771484375, 
+                "Value": 148.32415771484378, 
                 "Unit": "Hz"
             }, 
             "IndexInScore": 2, 
@@ -50,7 +50,7 @@
             ], 
             "Label": "1-HANE_1--n3", 
             "PerformedPitch": {
-                "Value": 166.72882080078125, 
+                "Value": 166.72882080078122, 
                 "Unit": "Hz"
             }, 
             "IndexInScore": 3, 
@@ -164,7 +164,7 @@
             ], 
             "Label": "1-HANE_1--n9", 
             "PerformedPitch": {
-                "Value": 166.72882080078125, 
+                "Value": 166.72882080078122, 
                 "Unit": "Hz"
             }, 
             "IndexInScore": 9, 
@@ -183,7 +183,7 @@
             ], 
             "Label": "1-HANE_1--n10", 
             "PerformedPitch": {
-                "Value": 181.03309631347656, 
+                "Value": 181.03309631347653, 
                 "Unit": "Hz"
             }, 
             "IndexInScore": 10, 
@@ -297,7 +297,7 @@
             ], 
             "Label": "1-HANE_1--n16", 
             "PerformedPitch": {
-                "Value": 181.03309631347656, 
+                "Value": 181.03309631347653, 
                 "Unit": "Hz"
             }, 
             "IndexInScore": 16, 
@@ -354,7 +354,7 @@
             ], 
             "Label": "1-HANE_1--n19", 
             "PerformedPitch": {
-                "Value": 166.72882080078125, 
+                "Value": 166.72882080078122, 
                 "Unit": "Hz"
             }, 
             "IndexInScore": 19, 
@@ -601,7 +601,7 @@
             ], 
             "Label": "1-HANE_1--n32", 
             "PerformedPitch": {
-                "Value": 197.41799926757812, 
+                "Value": 197.41799926757815, 
                 "Unit": "Hz"
             }, 
             "IndexInScore": 32, 

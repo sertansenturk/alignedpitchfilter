@@ -9,7 +9,7 @@ Usage
 All the relevant data can be easily obtained:
 
 ```python
-from alignedpitchfilter.AlignedPitchFilter import AlignedPitchFilter
+from alignedpitchfilter.alignedpitchfilter import AlignedPitchFilter
 
 alignedPitchFilter = AlignedPitchFilter()
 pitch_corrected, notes_corrected, synth_pitch = alignedPitchFilter.filter(pitch, notes)
