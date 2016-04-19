@@ -162,10 +162,10 @@ class AlignedPitchFilter(object):
                               if temp_pitch.size > 0 else pitch[i])
 
                 if not bottom_limit < interval < upper_limit:
-                    if len(temp_pitch) > 0:
+                    if temp_pitch:
                         pitch_chunks.append(temp_pitch)
                     temp_pitch = np.array([])
-        if len(temp_pitch) > 0:
+        if temp_pitch:
             pitch_chunks.append(temp_pitch)
 
         return pitch_chunks
