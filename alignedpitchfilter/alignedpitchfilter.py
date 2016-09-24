@@ -13,7 +13,7 @@ class AlignedPitchFilter(object):
         # from the tonic and de-normalized according to the tonic
         # frequency of the performance. The value is not computed from
         # THE PITCH TRAJECTORY OF THE NOTE; it is just the THEORETICAL
-        # FREQUENCY OF THE NOTE SYMBOL ACCORDING TO THE TONIC FREQUENY
+        # FREQUENCY OF THE NOTE SYMBOL ACCORDING TO THE TONIC FREQUENCY
         # The performed stable pitch of the note will be computed in the
         # aligned-note-models
         pitch_corrected = np.copy(pitch)
@@ -34,7 +34,8 @@ class AlignedPitchFilter(object):
 
         return pitch_corrected, notes_corrected, synth_pitch.tolist()
 
-    def _remove_rests_and_skipped_notes(self, notes_corrected):
+    @staticmethod
+    def _remove_rests_and_skipped_notes(notes_corrected):
         # remove skipped notes
         notes_corrected = ([n for n in notes_corrected
                             if not n['Interval'][0] == n['Interval'][1]])
@@ -43,7 +44,8 @@ class AlignedPitchFilter(object):
                            n['TheoreticalPitch']['Value']]
         return notes_corrected
 
-    def _get_pitch_trajectories(self, notes_corrected, pitch_corrected):
+    @staticmethod
+    def _get_pitch_trajectories(notes_corrected, pitch_corrected):
         for nc in notes_corrected:
             trajectory = np.vstack(
                 p[1] for p in pitch_corrected
@@ -60,8 +62,8 @@ class AlignedPitchFilter(object):
             nextlabel = ([] if i == len(notes) - 1 else
                          notes[i + 1]['Label'].split('--')[0])
 
-            # lt the synthetic pitch continue in the bpundaries a little bit
-            #  more
+            # let the synthetic pitch continue in the boundaries a little bit
+            # more
             startidx = self._preinterpolate_synth(
                 i, label, notes, prevlabel, time_stamps)
             self._postinterpolate_synth(i, label, nextlabel, notes, startidx,
@@ -72,14 +74,15 @@ class AlignedPitchFilter(object):
 
         return synth_pitch
 
-    def _postinterpolate_synth(self, i, label, nextlabel, notes, startidx,
+    def _postinterpolate_synth(self, i, label, next_label, notes, start_idx,
                                synth_pitch, time_stamps):
-        if not nextlabel:
+
+        if not next_label:
             # post interpolation end time on the last note
             endidx = self._find_closest_sample_idx(
                 notes[i]['Interval'][1] + self.max_boundary_tol,
                 time_stamps)
-        elif not label == nextlabel:
+        elif not label == next_label:
             # post interpolation end time on a group end
             nextstartidx = self._find_closest_sample_idx(
                 notes[i + 1]['Interval'][0], time_stamps)
@@ -91,7 +94,7 @@ class AlignedPitchFilter(object):
             nextstartidx = self._find_closest_sample_idx(
                 notes[i + 1]['Interval'][0], time_stamps)
             endidx = nextstartidx - 1
-        synth_pitch[startidx:endidx + 1] = \
+        synth_pitch[start_idx:endidx + 1] = \
             notes[i]['TheoreticalPitch']['Value']
 
     def _preinterpolate_synth(self, i, label, notes, prevlabel, time_stamps):
@@ -183,9 +186,9 @@ class AlignedPitchFilter(object):
 
         # plot pitch tracks
         ax.plot(pitch_plot[:, 0], pitch_plot[:, 1], 'g', label='Pitch',
-                alpha=0.7)
+                linewidth=3, alpha=0.7)
         ax.plot(pitch_corrected_plot[:, 0], pitch_corrected_plot[:, 1], 'b',
-                label=u'Corrected Pitch')
+                linewidth=1, label=u'Corrected Pitch')
 
         plt.xlabel('Time (sec)')
         plt.ylabel('Frequency (Hz)')
@@ -196,13 +199,13 @@ class AlignedPitchFilter(object):
         for note in notes_corrected[:-1]:
             ax.plot(note['Interval'], [note['PerformedPitch']['Value'],
                                        note['PerformedPitch']['Value']],
-                    'r', alpha=0.4, linewidth=4)
+                    'r', alpha=0.4, linewidth=6)
 
         # plot last note for labeling
         dmy_note = notes_corrected[-1]
         ax.plot(dmy_note['Interval'], [dmy_note['PerformedPitch']['Value'],
                                        dmy_note['PerformedPitch']['Value']],
-                'r', label=u'Aligned Notes', alpha=0.4, linewidth=4)
+                'r', label=u'Aligned Notes', alpha=0.4, linewidth=6)
 
         # set y axis limits
         pitch_vals = np.hstack((pitch_plot[:, 1], pitch_corrected_plot[:, 1]))
